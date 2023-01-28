@@ -40,7 +40,7 @@ def all(db: Session = Depends(get_db)):
 
 
 @app.get('/blog/{id}',status_code=200,response_model=schemas.ShowBlog)
-def show(id,response: Response,db: Session = Depends(get_db)):
+def show_blog(id,response: Response,db: Session = Depends(get_db)):
     blog= db.query(models.Blog).filter(models.Blog.id==id).first()          # filter picks single entry from the database with a field like Blog.id
                                                                               # first() gives the sigle 1st entry found
     if blog == None:
@@ -68,7 +68,7 @@ def update(id,request:schemas.Blog,db:Session= Depends(get_db)):
     db.commit()
     return {'detail':"Updated Successfully"}
 
-@app.post('/user')
+@app.post('/user',response_model=schemas.ShowUser)
 def create_user(request:schemas.User,db : Session= Depends(get_db)):
     hashedPassword = Hash.bcrypt(request.password)
     new_user= models.User(name=request.name,email=request.email,password=hashedPassword)
@@ -78,6 +78,12 @@ def create_user(request:schemas.User,db : Session= Depends(get_db)):
     return new_user
 
 
+@app.get('/user/{id}',response_model=schemas.ShowUser)
+def show_user(id,db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.id==id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with the id {id} is not available")
+    return user
 
 
 
