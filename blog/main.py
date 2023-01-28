@@ -3,6 +3,7 @@ from . import schemas,models
 from .database import engine,SessionLocal
 from sqlalchemy.orm import Session
 from typing import List             # Creates a collection of Pydantic classes
+from .hashing import Hash
 import uvicorn
 
 app = FastAPI()
@@ -69,7 +70,8 @@ def update(id,request:schemas.Blog,db:Session= Depends(get_db)):
 
 @app.post('/user')
 def create_user(request:schemas.User,db : Session= Depends(get_db)):
-    new_user= models.User(name=request.name,email=request.email,password=request.password)
+    hashedPassword = Hash.bcrypt(request.password)
+    new_user= models.User(name=request.name,email=request.email,password=hashedPassword)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)        # refresh() method refreshes the connection and fetchs the most recent data
