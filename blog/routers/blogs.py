@@ -7,15 +7,18 @@ from ..database import get_db
 
 
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/blog",
+    tags=["Blogs"]
+)
 
 
-@router.get('/blog',response_model=List[schemas.ShowBlog],tags=["blogs"])
+@router.get('/',response_model=List[schemas.ShowBlog])
 def all(db: Session = Depends(get_db)):
     blogs = db.query(models.Blog).all()
     return blogs
 
-@router.post("/blog",status_code=status.HTTP_201_CREATED,tags=["Blogs"])
+@router.post("/",status_code=status.HTTP_201_CREATED)
 def create(request:schemas.Blog,db: Session = Depends(get_db)): # the Depends function converts the Session obj into pydantic thing
                                                                 # request in a Blog obj (one of the schemas)
     '''creating blog with user passed title and body'''
@@ -27,14 +30,14 @@ def create(request:schemas.Blog,db: Session = Depends(get_db)): # the Depends fu
     return new_blog
     # return f'creating blog with title:{request.title} and body:{request.body}'
 
-@router.get('/blog',response_model=List[schemas.ShowBlog],tags=["Blogs"])
+@router.get('/',response_model=List[schemas.ShowBlog])
 def all(db: Session = Depends(get_db)):
     blogs= db.query(models.Blog).all()              # query for passing an search request
                                                     # all() fetches all the items in the database
     return blogs
 
 
-@router.get('/blog/{id}',status_code=200,response_model=schemas.ShowBlog,tags=["Blogs"])
+@router.get('/{id}',status_code=200,response_model=schemas.ShowBlog)
 def show_blog(id,db: Session = Depends(get_db)):
     blog= db.query(models.Blog).filter(models.Blog.id==id).first()          # filter picks single entry from the database with a field like Blog.id
                                                                               # first() gives the sigle 1st entry found
@@ -45,7 +48,7 @@ def show_blog(id,db: Session = Depends(get_db)):
 
     return blog
 
-@router.delete('/blog/{id}',status_code=status.HTTP_204_NO_CONTENT,tags=["Blogs"])        # 204 is bound to return no content
+@router.delete('/{id}',status_code=status.HTTP_204_NO_CONTENT)        # 204 is bound to return no content
 def delete_blog(id,db : Session = Depends(get_db)):
     blog=db.query(models.Blog).filter(models.Blog.id == id)
     if not blog.first():
@@ -54,7 +57,7 @@ def delete_blog(id,db : Session = Depends(get_db)):
     db.commit()
     return {"detail":"deleted successfully"}
 
-@router.put('/blog/{id}',status_code=status.HTTP_202_ACCEPTED,tags=["Blogs"])     # update a existing post
+@router.put('/{id}',status_code=status.HTTP_202_ACCEPTED)     # update a existing post
 def update(id,request:schemas.Blog,db:Session= Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id)
     if not blog.first():
