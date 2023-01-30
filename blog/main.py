@@ -25,7 +25,7 @@ def create(request:schemas.Blog,db: Session = Depends(get_db)): # the Depends fu
                                                                 # request in a Blog obj (one of the schemas)
     '''creating blog with user passed title and body'''
 
-    new_blog=models.Blog(title=request.title,body=request.body)
+    new_blog=models.Blog(title=request.title,body=request.body,user_id=1)
     db.add(new_blog)
     db.commit()
     db.refresh(new_blog)

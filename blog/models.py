@@ -1,8 +1,9 @@
 # This file contains the user defined model or schema
 # i.e. the structure of the database (sqlalchemy models are called models)
 
-from sqlalchemy import Column,Integer,String
+from sqlalchemy import Column,Integer,String,ForeignKey
 from .database import Base
+from sqlalchemy.orm import relationship
 
 # DataBase for Blogs
 class Blog(Base):
@@ -10,6 +11,9 @@ class Blog(Base):
     id = Column(Integer,primary_key=True,index=True)
     title = Column(String)
     body = Column(String)
+    user_id=Column(Integer,ForeignKey("Users Info.id"))
+
+    creator= relationship("User",back_populates="blogs")
 
 # DataBase for Users
 class User(Base):
@@ -18,3 +22,5 @@ class User(Base):
     name= Column(String)
     email= Column(String)
     password= Column(String)
+
+    blogs=relationship("Blog",back_populates="creator")
