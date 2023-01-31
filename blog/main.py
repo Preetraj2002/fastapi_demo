@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from . import models
 from .database import engine
-from .routers import blogs,users     # importing routes from router dir
+from .routers import blogs,users,authentication     # importing routes from router dir
 import uvicorn
 
 app = FastAPI()
@@ -10,6 +10,7 @@ models.Base.metadata.create_all(bind=engine)    # Whenever a database is not fou
 
 app.include_router(blogs.router)
 app.include_router(users.router)
+app.include_router(authentication.router)
 
 
 @app.get('/')
