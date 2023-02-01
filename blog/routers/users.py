@@ -21,7 +21,7 @@ def create_user(request:schemas.User,db : Session= Depends(get_db)):
 
 
 @router.get('/{id}',response_model=schemas.ShowUser)
-def show_user(id,db: Session = Depends(get_db)):
+def show_user(id:int,db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.id==id).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"User with the id {id} is not available")
