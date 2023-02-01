@@ -1,5 +1,5 @@
 from fastapi import Depends,HTTPException,status
-from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from . import JWTtoken
 
 oauth2_scheme= OAuth2PasswordBearer(tokenUrl="login")       # Path from where fastapi will fetch the token
