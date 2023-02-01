@@ -14,7 +14,7 @@ def login(request:schemas.Login,db:Session=Depends(database.get_db)):
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Invalid Credentials !! User with id {request.username} not available in the database")
 
-    matching = Hasher.verify_password(user.password,request.password)
+    matching = Hasher.verify_password(request.password,user.password)
 
     if not matching:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
